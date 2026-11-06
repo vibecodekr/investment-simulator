@@ -176,14 +176,45 @@ if st.button("Calculate"):
         use_container_width=True
     )
 
-    winner = summary.loc[
-        summary["Value"].idxmax(),
-        "Portfolio"
-    ]
+    custom_row = summary[
+        summary["Portfolio"] == "Custom"
+    ].iloc[0]
 
-    st.success(
-        f"Winner: {winner}"
+    qqq_row = summary[
+        summary["Portfolio"] == "QQQ"
+    ].iloc[0]
+
+    spy_row = summary[
+        summary["Portfolio"] == "SPY"
+    ].iloc[0]
+
+    beat_qqq = (
+        custom_row["Value"]
+        - qqq_row["Value"]
     )
+
+    beat_spy = (
+        custom_row["Value"]
+        - spy_row["Value"]
+    )
+
+    if beat_qqq > 0:
+        st.success(
+            f"✅ Beat QQQ by ${beat_qqq:,.0f}"
+        )
+    else:
+        st.error(
+            f"❌ Underperformed QQQ by ${abs(beat_qqq):,.0f}"
+        )
+
+    if beat_spy > 0:
+        st.success(
+            f"✅ Beat SPY by ${beat_spy:,.0f}"
+        )
+    else:
+        st.error(
+            f"❌ Underperformed SPY by ${abs(beat_spy):,.0f}"
+        )
 
     qqq_chart = qqq["growth"].copy()
     qqq_chart["Portfolio"] = "QQQ"
